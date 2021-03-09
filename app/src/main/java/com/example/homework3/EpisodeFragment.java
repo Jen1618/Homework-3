@@ -1,8 +1,10 @@
 package com.example.homework3;
 
-import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -89,7 +91,7 @@ public class EpisodeFragment extends Fragment {
                                 String episodeName = title.replace(" ", "_");
                                 String displayMessage = "To read more information about Episode " + episode + " " + title + " please visit: " + "https://rickandmorty.fandom.com/wiki/" + episodeName;
                                 button_info.setOnClickListener(v -> {
-                                    sendOnChannel(view, episode, title, displayMessage);
+                                    sendOnChannel(view, episode, title, displayMessage, episodeName);
                                 });
 
                                 client.get(character1, new AsyncHttpResponseHandler() {
@@ -168,6 +170,20 @@ public class EpisodeFragment extends Fragment {
         return view;
     }
 
+    private void sendOnChannel(View v, String a, String b, String displayMessage, String episodeName){
+        NotificationCompat.Builder notification = new NotificationCompat.Builder(getContext(), CHANNEL_ID)
+                .setSmallIcon(R.drawable.ic_message).setContentTitle(a + " "+ b).setContentText(displayMessage)
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setCategory(NotificationCompat.CATEGORY_MESSAGE)
+                .setStyle(new NotificationCompat.BigTextStyle().bigText(displayMessage));
+                //.build();
+        Intent resultIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://rickandmorty.fandom.com/wiki/" + episodeName));
+
+        PendingIntent pending = PendingIntent.getActivity(getContext(), 0, resultIntent, PendingIntent.FLAG_ONE_SHOT);
+        notification.setContentIntent(pending);
+        notificationManager.notify(0, notification.build());
+    }
+
     private void createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel channel1 = new NotificationChannel(CHANNEL_ID, "Channel_1", NotificationManager.IMPORTANCE_HIGH);
@@ -179,20 +195,4 @@ public class EpisodeFragment extends Fragment {
         }
     }
 
-    private void sendOnChannel(View v, String a, String b, String displayMessage){
-        Notification notification = new NotificationCompat.Builder(getContext(), CHANNEL_ID)
-                .setSmallIcon(R.drawable.ic_message).setContentTitle(a + " "+ b).setContentText(displayMessage)
-                .setPriority(NotificationCompat.PRIORITY_HIGH)
-                .setCategory(NotificationCompat.CATEGORY_MESSAGE)
-                .setStyle(new NotificationCompat.BigTextStyle().bigText(displayMessage))
-                .build();
-        /*Intent resultIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(displayMessage));
-        resultIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        PendingIntent resultPendingIntent = PendingIntent.getActivity(getContext(), 0, resultIntent, 0);
-
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(getContext(), CHANNEL_ID);
-        builder.setContentIntent(resultPendingIntent);
-        // using the same tag and Id causes the new notification to replace an existing one */
-        notificationManager.notify(1,notification);
-    }
 }
