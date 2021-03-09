@@ -43,7 +43,6 @@ public class EpisodeFragment extends Fragment {
     private static AsyncHttpClient client = new AsyncHttpClient();
     private NotificationManagerCompat notificationManager;
     String CHANNEL_ID ="channel1";
-    //String displayMessage;
 
     @Nullable
     @Override
@@ -58,7 +57,6 @@ public class EpisodeFragment extends Fragment {
         button_info = view.findViewById(R.id.button_moreInfo);
         createNotificationChannel();
         notificationManager = NotificationManagerCompat.from(getActivity());
-
 
         client.addHeader("accept", "application/json");
         client.get(episodes_url, new AsyncHttpResponseHandler() {
@@ -122,7 +120,6 @@ public class EpisodeFragment extends Fragment {
                                         } catch (JSONException e) {
                                             e.printStackTrace();
                                         }
-
                                     }
 
                                     @Override
@@ -176,9 +173,7 @@ public class EpisodeFragment extends Fragment {
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setCategory(NotificationCompat.CATEGORY_MESSAGE)
                 .setStyle(new NotificationCompat.BigTextStyle().bigText(displayMessage));
-                //.build();
         Intent resultIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://rickandmorty.fandom.com/wiki/" + episodeName));
-
         PendingIntent pending = PendingIntent.getActivity(getContext(), 0, resultIntent, PendingIntent.FLAG_ONE_SHOT);
         notification.setContentIntent(pending);
         notificationManager.notify(0, notification.build());
@@ -187,12 +182,9 @@ public class EpisodeFragment extends Fragment {
     private void createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel channel1 = new NotificationChannel(CHANNEL_ID, "Channel_1", NotificationManager.IMPORTANCE_HIGH);
-
             channel1.setDescription("This is my Channel 1");
-
             NotificationManager notificationManager = (NotificationManager)getActivity().getSystemService(getActivity().NOTIFICATION_SERVICE);
             notificationManager.createNotificationChannel(channel1);
         }
     }
-
 }

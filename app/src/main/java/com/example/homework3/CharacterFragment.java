@@ -55,14 +55,10 @@ public class CharacterFragment extends Fragment {
                 try {
                     JSONObject jsonObj = new JSONObject(new String(responseBody));
                     String count = jsonObj.getJSONObject("info").getString("count");
-                    Log.i("valueNum", String.valueOf(jsonObj)); //Delete later
-                    Log.i("valueNum", count);                   //delete
                     int characterNum = Integer.parseInt(count);
                     Random rand = new Random();
                     int numSearch = rand.nextInt(characterNum + 1);
                     String newCharacterUrl = character_url + numSearch; //gets a new string for api
-                    Log.i("valueNum", String.valueOf(numSearch));   //delete
-                    Log.i("valueNum", newCharacterUrl);   //delete
                     client.get(newCharacterUrl, new AsyncHttpResponseHandler() {
                         @Override
                         public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {

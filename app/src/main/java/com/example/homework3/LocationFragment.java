@@ -1,6 +1,7 @@
 package com.example.homework3;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,7 +30,6 @@ public class LocationFragment extends Fragment {
     private ArrayList<Location> locations;
     private String location_url = "https://rickandmortyapi.com/api/location/?page=1";
     private static AsyncHttpClient client = new AsyncHttpClient();
-
 
     @Nullable
     @Override
@@ -62,7 +62,7 @@ public class LocationFragment extends Fragment {
 
             @Override
             public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-
+                Log.e("Error", "Error");
             }
         });
         return view;

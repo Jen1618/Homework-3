@@ -34,7 +34,6 @@ public class MainActivity extends AppCompatActivity {
         button_character.setOnClickListener(v -> loadFragment(new CharacterFragment()));
         button_episode.setOnClickListener(v -> loadFragment(new EpisodeFragment()));
         button_location.setOnClickListener(v -> loadFragment(new LocationFragment()));
-
     }
 
     public Bitmap ImageViaAssets(String fileName){

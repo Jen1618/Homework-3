@@ -12,7 +12,6 @@ public class Location {
         this.dimension = dimension;
     }
 
-
     public String getName() {
         return name;
     }
