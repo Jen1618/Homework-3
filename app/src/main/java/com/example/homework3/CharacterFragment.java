@@ -20,6 +20,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Random;
 
 import cz.msebera.android.httpclient.Header;
@@ -80,8 +82,19 @@ public class CharacterFragment extends Fragment {
                                 textView_origin.setText("Origin: " + origin);
                                 String location = jsonObj2.getJSONObject("location").getString("name");
                                 textView_location.setText("Location: " + location);
-                                JSONArray episodes = jsonObj2.getJSONArray("episode");
-                                textView_episodes.setText("Appeared in Episodes: " + String.valueOf(episodes));
+                                JSONArray episodesArray = jsonObj2.getJSONArray("episode");
+                                ArrayList<String> episodeList = new ArrayList<>();
+                                Log.i("episodes",String.valueOf(episodesArray));
+
+                                for (int i = 0; i < episodesArray.length(); i++) {
+                                    Log.i("episodes", String.valueOf(episodesArray.length()));
+                                    String episodeVal = episodesArray.getString(i);
+                                    String episodeEdited = episodeVal.replace("https://rickandmortyapi.com/api/episode/", "");
+                                    episodeList.add(episodeEdited);
+                                }
+                                String finalList = Arrays.toString(episodeList.toArray()).replace("[", "").replace("]", "");
+                                textView_episodes.setText("Appeared in Episodes: " + finalList);
+                                Log.i("episodes", String.valueOf(episodeList));
 
                             } catch (JSONException e) {
                                 e.printStackTrace();

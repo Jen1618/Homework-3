@@ -1,5 +1,9 @@
 package com.example.homework3;
 
+import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,6 +15,8 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.fragment.app.Fragment;
 
 import com.loopj.android.http.AsyncHttpClient;
@@ -33,7 +39,9 @@ public class EpisodeFragment extends Fragment {
     private Button button_info;
     private String episodes_url = "https://rickandmortyapi.com/api/episode/";
     private static AsyncHttpClient client = new AsyncHttpClient();
-
+    private NotificationManagerCompat notificationManager;
+    String CHANNEL_ID ="channel1";
+    //String displayMessage;
 
     @Nullable
     @Override
@@ -46,7 +54,9 @@ public class EpisodeFragment extends Fragment {
         textView_airDate = view.findViewById(R.id.textView_airDate);
         textView_characters = view.findViewById(R.id.textView_characters);
         button_info = view.findViewById(R.id.button_moreInfo);
-     //   button_info.setOnClickListener(v -> );
+        createNotificationChannel();
+        notificationManager = NotificationManagerCompat.from(getActivity());
+
 
         client.addHeader("accept", "application/json");
         client.get(episodes_url, new AsyncHttpResponseHandler() {
@@ -76,6 +86,11 @@ public class EpisodeFragment extends Fragment {
                                 String character2 = charactersArray.getString(1);
                                 String character3 = charactersArray.getString(2);
                                 Log.i("test", character1); //delete
+                                String episodeName = title.replace(" ", "_");
+                                String displayMessage = "To read more information about Episode " + episode + " " + title + " please visit: " + "https://rickandmorty.fandom.com/wiki/" + episodeName;
+                                button_info.setOnClickListener(v -> {
+                                    sendOnChannel(view, episode, title, displayMessage);
+                                });
 
                                 client.get(character1, new AsyncHttpResponseHandler() {
                                     @Override
@@ -153,17 +168,31 @@ public class EpisodeFragment extends Fragment {
         return view;
     }
 
-   /* private void createNotificationChannel(){
+    private void createNotificationChannel() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            NotificationChannel channel1 = new NotificationChannel(CHANNEL_ID, "Channel_1", NotificationManager.IMPORTANCE_HIGH);
 
-        Notification notification = new NotificationCompat.Builder(context, CHANNEL_ID)
-                .setSmallIcon(R.drawable.new_mail)
-                .setContentTitle(emailObject.getSenderName())
-                .setContentText(emailObject.getSubject())
-                .setLargeIcon(emailObject.getSenderAvatar())
-                .setStyle(new NotificationCompat.BigTextStyle()
-                        .bigText(emailObject.getSubjectAndSnippet()))
+            channel1.setDescription("This is my Channel 1");
+
+            NotificationManager notificationManager = (NotificationManager)getActivity().getSystemService(getActivity().NOTIFICATION_SERVICE);
+            notificationManager.createNotificationChannel(channel1);
+        }
+    }
+
+    private void sendOnChannel(View v, String a, String b, String displayMessage){
+        Notification notification = new NotificationCompat.Builder(getContext(), CHANNEL_ID)
+                .setSmallIcon(R.drawable.ic_message).setContentTitle(a + " "+ b).setContentText(displayMessage)
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setCategory(NotificationCompat.CATEGORY_MESSAGE)
+                .setStyle(new NotificationCompat.BigTextStyle().bigText(displayMessage))
                 .build();
-        NotificationManager notificationManager = getSystemService(NotificationManager.class);
-        notificationManager.createNotificationChannel(channel);
-    } */
+        /*Intent resultIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(displayMessage));
+        resultIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        PendingIntent resultPendingIntent = PendingIntent.getActivity(getContext(), 0, resultIntent, 0);
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(getContext(), CHANNEL_ID);
+        builder.setContentIntent(resultPendingIntent);
+        // using the same tag and Id causes the new notification to replace an existing one */
+        notificationManager.notify(1,notification);
+    }
 }

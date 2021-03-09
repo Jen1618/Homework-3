@@ -31,8 +31,8 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.ViewHo
     public void onBindViewHolder(@NonNull LocationAdapter.ViewHolder holder, int position) {
         Location location = locations.get(position);
         holder.textView_locationName.setText(location.getName());
-        holder.textView_type.setText(location.getType());
-        holder.textView_dimension.setText(location.getDimension());
+        holder.textView_type.setText("Type: " + location.getType());
+        holder.textView_dimension.setText("Dimension: " + location.getDimension());
     }
 
     @Override
